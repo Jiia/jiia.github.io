@@ -145,19 +145,17 @@ const notify = (title, text) => {
   })
 }
 
-const notificationIntervalsMs = 1000 * 60 * 60 // 1 hour
+const notificationIntervalsMs = 1000 * 60
 let notificationHandle = null
 
 const start = async (coordinates) => {
   console.log('Auto update started')
   if (!notificationHandle) {
     update(coordinates)
+    notificationHandle = setInterval(() => {
+      update(coordinates)
+    }, notificationIntervalsMs)
   }
-
-  notificationHandle = setInterval(() => {
-    start(coordinates)
-    update(coordinates)
-  }, notificationIntervalsMs)
 }
 
 const stop = () => {
