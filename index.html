@@ -26,9 +26,37 @@
   </head>
 
   <body>
-    <button onclick="getLocation()">Salli sijainti</button>
-    <button onclick="allowNotifications()">Salli ilmoitukset</button>
-    <button onclick="start()">Aloita ilmoitukset</button>
-    <button onclick="stop()">Lopeta ilmoitukset</button>
+    <div>
+      <button onclick="getLocation()">Salli sijainti</button>
+      <button onclick="allowNotifications()">Salli ilmoitukset</button>
+      <button onclick="start()">Aloita ilmoitukset</button>
+      <button onclick="stop()">Lopeta ilmoitukset</button>
+    </div>
   </body>
+  <style>
+    body {
+      background-color: black;
+      height: 100%;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    button {
+      width: 80%;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      font-size: 18px;
+      text-align: left;
+      background-color: white;
+      outline: none;
+      border: none;
+    }
+    button:hover {
+      color: blue;
+    }
+  </style>
 </html>
