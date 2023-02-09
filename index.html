@@ -1,103 +1,34 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Käpy counter</title>
-    </head>
-    <body>
-        <div class="wrapper">
-            <div class="bg"></div>
-            <div class="timer">
-                <div class="days-wrapper">
-                    <div class="days"></div>
-                </div>
-                <div class="time"></div>
-            </div>
-        </div>
-    </body>
-    <style>
-        body {
-            background-color: black;
-            height: 100vh;
-            font-family: sans-serif;
-            font-weight: bold;
-        }
-        .wrapper {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .bg {
-            background: url('./kapy.jpg') no-repeat;
-            height: 50%;
-            width: 50%;
-            background-size: 100%;
-            background-position: 50% 100%;
-            margin: 0 auto;
-            transition: background-size 100ms;
-        }
-        .bg.pump {
-            background-size: 99%;
-        }
-        .timer {
-            height: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .days-wrapper {
-            text-align: center;;
-        }
-        .days {
-            font-size: 5em;
-            font-family: serif;
-            color: white;
-        }
-        .time {
-            margin-top: 0rem;
-            font-size: 1.65em;
-            color: #de0000;
-        }
-    </style>
-    <script>
-        const timeEl = document.querySelector('.time')
-        const daysEl = document.querySelector('.days')
-        const bgEl = document.querySelector('.bg')
-        const deadline = new Date('2022-12-24T23:31:00')
-        let toggle = true
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Kuuhulluutin">
+    <meta name="apple-mobile-web-app-title" content="Kuuhulluutin">
+    <meta name="theme-color" content="#000000">
+    <meta name="msapplication-navbutton-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        function f(num, pad = true) {
-          num = Math.floor(num)
-          if (pad && num < 10) {
-              return `0${num}`
-          }
-          return num
-        }
+    <link rel="icon" type="image/png" sizes="512x512" href="icon/icon512.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="icon/icon512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon/icon192.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="icon/icon192.png">
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+    />
+    <script async src="https://cdn.jsdelivr.net/npm/pwacompat" crossorigin="anonymous"></script>
+    <script async src="js/main.js"></script>
+  </head>
 
-        function updateTime() {
-            const secondsToDeadline = (deadline - new Date()) / 1000
-            const seconds = secondsToDeadline % 60
-            const minutes = secondsToDeadline / (60) % 60
-            const hours = secondsToDeadline / (60 * 60) % 24
-            const days = secondsToDeadline / (60 * 60 * 24)
-
-            timeEl.textContent = `${f(hours)}:${f(minutes)}:${f(seconds)}`
-            daysEl.textContent = `${f(days, false)}`
-
-            const elapsed = (deadline - Date.now()) % 1000
-
-            if (toggle && elapsed <= 100) {
-                bgEl.classList.add('pump')
-                toggle = false
-            } else if (!toggle && elapsed > 100) {
-                bgEl.classList.remove('pump')
-                toggle = true
-            }
-        }
-
-        updateTime()
-
-        setInterval(updateTime, 100)
-    </script>
+  <body>
+    <button onclick="getLocation()">Salli sijainti</button>
+    <button onclick="allowNotifications()">Salli ilmoitukset</button>
+    <button onclick="start()">Aloita ilmoitukset</button>
+    <button onclick="stop()">Lopeta ilmoitukset</button>
+  </body>
 </html>
