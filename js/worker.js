@@ -82,8 +82,40 @@ const getNextMoonAboveHorizon = (coordinates) => {
 }
 
 const getWeatherForDate = (desiredDate, forecast) => {
-  console.log(forecast)
   return forecast.find(({ date }) => date <= desiredDate)
+}
+
+const notifyMoonPosition = async (cur, next) => {
+  console.log('Current moon', cur)
+  console.log('Next nice moon', next)
+
+  const body1 = `Sijainnissa: ${cur.compass} ${cur.azimuth}°,
+                korkeus ${cur.altitude}° (${cur.direction}),
+                valaistu ${cur.fraction}%,
+                pilvipeite ${cur.cloudiness}%,
+                tuulisuus ${cur.windSpeed}m/s,
+                lämpötila ${cur.temperature}°C`.replace(/\s+/g, ' ')
+
+  const body2 = `${next.date.toLocaleString()}
+                 sijainnissa: ${next.compass} ${next.azimuth}°,
+                 valaistu ${next.fraction}%,
+                 pilvipeite ${next.cloudiness || '?'}%`.replace(/\s+/g, ' ')
+
+  await notify('Kuutilanne', body1)
+  await notify('Kuu näkyvissä seuraavan kerran', body2)
+}
+
+const notify = (title, text) => {
+  return self.registration.showNotification(title, {
+    body: text,
+    vibrate: [200, 400, 200, 400, 200, 400, 200],
+    actions: [
+      {
+        action: 'STOP_NOTIFICATIONS',
+        title: 'Pysäytä ilmoitukset',
+      }
+    ]
+  })
 }
 
 const update = async (coordinates) => {
@@ -95,7 +127,7 @@ const update = async (coordinates) => {
   const nextMoon = getNextMoonAboveHorizon(coordinates)
   const nextWeather = getWeatherForDate(nextMoon.date, forecast)
 
-  notifyMoonPosition(
+  await notifyMoonPosition(
     {
       ...forecast[0],
       ...moon,
@@ -110,57 +142,25 @@ const update = async (coordinates) => {
   )
 }
 
-const notifyMoonPosition = (cur, next) => {
-  console.log('Current moon', cur)
-  console.log('Next nice moon', next)
 
-  const body = `Sijainnissa: ${cur.compass} ${cur.azimuth}°,
-                korkeus ${cur.altitude}° (${cur.direction}),
-                valaistu ${cur.fraction}%,
-                pilvipeite ${cur.cloudiness}%,
-                tuulisuus ${cur.windSpeed}m/s,
-                lämpötila ${cur.temperature}°C`.replace(/\s+/g, ' ')
-
-  console.log(body)
-  notify('Kuutilanne', body)
-
-  const body2 = `${next.date.toLocaleString()}
-                 sijainnissa: ${next.compass} ${next.azimuth}°,
-                 valaistu ${next.fraction}%,
-                 pilvipeite ${next.cloudiness}%`.replace(/\s+/g, ' ')
-
-  notify('Kuu näkyvissä seuraavan kerran', body2)
-}
-
-const notify = (title, text) => {
-  self.registration.showNotification(title, {
-    body: text,
-    vibrate: [200, 400, 200, 400, 200, 400, 200],
-    actions: [
-      {
-        action: 'STOP_NOTIFICATIONS',
-        title: 'Pysäytä ilmoitukset',
-      }
-    ]
-  })
-}
-
-const notificationIntervalsMs = 1000 * 60
-let notificationHandle = null
 
 const start = async (coordinates) => {
   console.log('Auto update started')
-  if (!notificationHandle) {
-    update(coordinates)
-    notificationHandle = setInterval(() => {
-      update(coordinates)
-    }, notificationIntervalsMs)
+  update(coordinates)
+
+  try {
+    await self.registration.periodicSync.register('PERIODIC_UPDATE', {
+      minInterval: 5 * 60 * 1000,
+    })
+  } catch (error) {
+    console.error(error)
+    console.log('Periodic Sync could not be registered!');
+    alert('Taustapäivitys ei ole käytössä. Olethan asentanut sovelluksen?')
   }
 }
 
 const stop = () => {
-  clearInterval(notificationHandle)
-  notificationHandle = null
+  self.registration.periodicSync.unregister('PERIODIC_UPDATE');
   console.log('Auto update stopped')
 }
 
@@ -174,6 +174,12 @@ self.addEventListener("message", function(event) {
     stop()
   }
 })
+
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'PERIODIC_UPDATE') {
+    event.waitUntil(update());
+  }
+});
 
 self.addEventListener("install", event => {
   console.log("Service Worker installing.");
