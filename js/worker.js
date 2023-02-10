@@ -148,14 +148,19 @@ const start = async (coordinates) => {
   console.log('Auto update started')
   update(coordinates)
 
-  try {
-    await self.registration.periodicSync.register('PERIODIC_UPDATE', {
-      minInterval: 5 * 60 * 1000,
-    })
-  } catch (error) {
-    console.error(error)
-    console.log('Periodic Sync could not be registered!');
-    alert('Taustapäivitys ei ole käytössä. Olethan asentanut sovelluksen?')
+  if ('periodicSync' in self.registration) {
+    try {
+      await self.registration.periodicSync.register('PERIODIC_UPDATE', {
+        minInterval: 5 * 60 * 1000,
+      })
+      alert('Tausta-ajon käynnistys onnistui')
+    } catch (error) {
+      console.error(error)
+      console.log('Periodic Sync could not be registered!');
+      alert('Taustapäivitys ei ole käytössä. Olethan asentanut sovelluksen?')
+    }
+  } else {
+    alert('Tausta-ajo ei ole tuettu')
   }
 }
 

@@ -57,6 +57,24 @@ const allowNotifications = async () => {
   }
 }
 
+const allowBackgroundSync = async () => {
+  try {
+    const status = await navigator.permissions.query({
+      name: 'periodic-background-sync',
+    })
+    if (status.state === 'granted') {
+      return true
+    } else {
+      console.log(status)
+      throw new Error('Backround sync denied')
+    }
+  } catch (error) {
+    console.error(error)
+    alert('Tausta-ajoa ei ole sallittu. Ilmoituksia ei voida lähettää sovelluksen ollessa suljettuna.')
+    return false;
+  }
+}
+
 const notifyWorker = async (message) => {
   const worker = await getServiceWorker()
   if (!worker) {
@@ -77,6 +95,8 @@ const start = async () => {
     alert('Sijainti ei ole saatavilla. Sovellus ei voi käynnistyä.')
     return
   }
+
+  await allowBackgroundSync()
 
   notifyWorker({
     type: 'START_NOTIFICATIONS',
