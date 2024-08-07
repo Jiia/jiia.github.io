@@ -1,68 +1,14 @@
-<!DOCTYPE html>
-<html lang="fi">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Kuuhulluutin">
-    <meta name="apple-mobile-web-app-title" content="Kuuhulluutin">
-    <meta name="theme-color" content="#000000">
-    <meta name="msapplication-navbutton-color" content="#000000">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="msapplication-starturl" content="/">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="icon" type="image/png" sizes="512x512" href="icon/icon512.png">
-    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="icon/icon512.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon/icon192.png">
-    <link rel="apple-touch-icon" type="image/png" sizes="192x192" href="icon/icon192.png">
-    <link
-      href="https://fonts.googleapis.com/css?family=Montserrat"
-      rel="stylesheet"
-    />
-    <script async src="https://cdn.jsdelivr.net/npm/pwacompat" crossorigin="anonymous"></script>
-    <script async src="js/main.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lukkari</title>
+    <script type="module" crossorigin src="/assets/index-19_nX_dj.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Aqwyz9Mg.css">
   </head>
-
   <body>
-    <div>
-      <button onclick="getLocation()">1. Salli sijainti</button>
-      <button onclick="allowNotifications()">2. Salli ilmoitukset</button>
-      <button onclick="allowBackgroundSync()">3. Salli sovelluksen olla käynnissä taustalla</button>
-      <button onclick="start()">4. Aloita ilmoitukset</button>
-      <button onclick="stop()">5. Lopeta ilmoitukset</button>
-      <div>v23.02.10.1</div>
-    </div>
+    <div id="root"></div>
   </body>
-  <style>
-    body {
-      font-family: Montserrat, Helvetica, Arial, sans-serif;
-      background-color: black;
-      height: 100%;
-    }
-    div {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-    }
-    div div {
-      color: white;
-    }
-    button {
-      width: 80%;
-      margin: 1rem 0;
-      padding: 0.5rem 1rem;
-      font-size: 18px;
-      text-align: left;
-      background-color: white;
-      outline: none;
-      border: none;
-    }
-    button:hover {
-      color: blue;
-    }
-  </style>
 </html>
